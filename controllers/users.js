@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const Unauthorized = require('../errors/Unauthorized');
 const BadRequest = require('../errors/BadRequest');
 const Conflict = require('../errors/Conflict');
 const NotFound = require('../errors/NotFound');
@@ -42,6 +41,8 @@ module.exports.updateProfile = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new BadRequest(`Переданы некорректные данные при обновлении профиля -- ${err.name}`));
+      } else if (err.code === 11000) {
+        next(new Conflict('Пользователь с таким email уже зарегистрирован'));
       } else {
         next(err);
       }
@@ -88,7 +89,5 @@ module.exports.login = (req, res, next) => {
 
       res.status(200).send({ message: 'Регистрация прошла успешно!' });
     })
-    .catch(() => {
-      next(new Unauthorized('Необходима авторизация'));
-    });
+    .catch(next);
 };

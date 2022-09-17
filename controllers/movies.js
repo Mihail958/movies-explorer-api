@@ -2,12 +2,16 @@ const Movies = require('../models/movie');
 const BadRequest = require('../errors/BadRequest');
 const NotFound = require('../errors/NotFound');
 const ForbiddenError = require('../errors/ForbiddenError');
-const Conflict = require('../errors/Conflict');
 
 module.exports.getMovies = (req, res, next) => {
-  Movies.find({})
-    .then((movies) => res.status(200).send(movies))
-    .catch((err) => next(err));
+  Movies.find({ owner: req.user._id })
+    .then((movies) => {
+      if (!movies) {
+        throw new NotFound('Данные не найдены!');
+      }
+      res.send(movies);
+    })
+    .catch(next);
 };
 
 module.exports.createMovie = (req, res, next) => {
@@ -43,15 +47,13 @@ module.exports.createMovie = (req, res, next) => {
   })
     .then((movie) => {
       if (!movie) {
-        throw new NotFound('Переданы некорректные данные');
+        throw new NotFound('Данные не найдены!');
       }
       res.status(200).send(movie);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequest({ message: 'Переданы некорректные данные' }));
-      } else if (err.code === 11000) {
-        next(new Conflict({ message: 'Фильм уже создан' }));
       } else {
         next(err);
       }
