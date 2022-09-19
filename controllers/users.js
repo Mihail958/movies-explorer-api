@@ -26,12 +26,12 @@ module.exports.getCurrentUser = (req, res, next) => {
 };
 
 module.exports.updateProfile = (req, res, next) => {
-  const { name, about } = req.body;
+  const { name, email } = req.body;
 
   User
     .findByIdAndUpdate(
       req.user._id,
-      { name, about },
+      { name, email },
       { new: true, runValidators: true },
     )
     .orFail(() => {

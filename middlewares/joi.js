@@ -25,10 +25,10 @@ const loginValid = celebrate({
 
 const createMovieValid = celebrate({
   body: Joi.object().keys({
-    country: Joi.string().required().min(2).max(100),
-    director: Joi.string().required().min(2).max(100),
+    country: Joi.string().required(),
+    director: Joi.string().required(),
     duration: Joi.number().required(),
-    year: Joi.string().required().min(2).max(5),
+    year: Joi.string().required(),
     description: Joi.string().required(),
     image: Joi.string().required().custom(validateUrl),
     trailerLink: Joi.string().required().custom(validateUrl),
@@ -48,7 +48,7 @@ const userValid = celebrate({
 
 const parameterIdValid = (nameId) => celebrate({
   params: Joi.object().keys({
-    [nameId]: Joi.string().hex().length(24),
+    [nameId]: Joi.string().hex().required().length(24),
   }),
 });
 

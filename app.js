@@ -7,9 +7,9 @@ const helmet = require('helmet');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errorHandler');
-
-const { PORT = 3000, DB_ADDRESS = 'mongodb://localhost:27017/bitfilmsdb' } = process.env;
+const limiter = require('./middlewares/limiter');
 const router = require('./routes/index');
+const { PORT, DB_ADRESS } = require('./configs/index');
 
 const app = express();
 
@@ -21,6 +21,8 @@ app.use(requestLogger); // подключаем логгер запросов
 
 app.use(helmet());
 
+app.use(limiter);
+
 app.use(router);
 
 app.use(errorLogger); // подключаем логгер ошибок
@@ -30,7 +32,7 @@ app.use(errors());
 // централизованный обработчик ошибок
 app.use(errorHandler);
 
-mongoose.connect(DB_ADDRESS, {
+mongoose.connect(DB_ADRESS, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
