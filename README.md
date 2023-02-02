@@ -1,4 +1,4 @@
-# Backend Диплома Movies Explorer
+# Backend дипломного проекта Movies Explorer
 ### *Дипломный проект от [Яндекс.Практикум](https://practicum.yandex.ru/web/)*
 
 ## Описание проекта
